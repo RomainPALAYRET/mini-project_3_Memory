@@ -16,6 +16,9 @@ public class Carte {
     private String path; // le chemin de l'image sur la carte;
 
     private Image face;
+    private Image back;
+
+    private Image visible;
 
     /**
      * Constructeur de la classe Carte
@@ -27,6 +30,8 @@ public class Carte {
 
         this.path = path;
         face = new Image(truePath);
+        back = new Image("file:ressource/img/Inconnu.png", 55, 55,false,false);
+        visible = back;
     }
 
     /**
@@ -41,6 +46,27 @@ public class Carte {
      */
     public Image getFace() {
         return this.face;
+    }
+
+    /**
+     * @return l'image de la carte
+     */
+    public Image getVisible() {
+        return this.visible;
+    }
+
+    /**
+     * La face visible de la carte est sa face
+     */
+    public void setFace() {
+        visible = face;
+    }
+
+    /**
+     *  La face visible de la carte est son dos
+     */
+    public void setBack() {
+        visible = back;
     }
 
     /**

@@ -24,13 +24,14 @@ public class Controller {
     @FXML
     private Button bStart;
 
+    private List<Carte> paireATester;
+
     @FXML
     private GridPane gridPaneCenter;
 
     @FXML
     private void actionBStart(javafx.event.ActionEvent evt) {
 
-        System.out.println("Carapuce");
         List<Carte> lCarte = createListCarte();
 
         /* On creer une grille de 6 par 4 qu'on place au centre du BorderPane */
@@ -47,6 +48,7 @@ public class Controller {
 
         /* On rempli toutes les cases par des bouttons avec des images de "?" */
         shuffle(lCarte);
+        paireATester = new ArrayList<Carte>();
 
         int iGrid = -1;
         int jGrid = 0;
@@ -58,12 +60,31 @@ public class Controller {
             }
 
             ImageView n = new ImageView();
-            n.setImage(new Image("file:ressource/img/Inconnu.png", 55, 55,false,false));
+            Image i = new Image("file:ressource/img/truc.png");
+            n.setImage(card.getVisible());
             n.setOnMouseClicked(new EventHandler() {
 
                 @Override
                 public void handle(Event event) {
-                    n.setImage(card.getFace());
+
+                    if(paireATester.size() == 2) {
+                        // on retourne les 2 cartes précédente qui ne font pas une paire
+                        paireATester.get(0).setBack();
+                        paireATester.get(1).setBack();
+                        paireATester.clear();
+                    }
+
+                    paireATester.add(card);
+                    card.setFace();
+
+                    if(paireATester.size() == 2) {
+                        // s'il y a une paire
+                        if(paireATester.get(0).equals(paireATester.get(1))) {
+                            paireATester.clear();
+                        }
+                    }
+                    actualiserImageView(lCarte);
+
                 }
             });
             gridPaneCenter.add(n, iGrid, jGrid);
@@ -83,6 +104,18 @@ public class Controller {
             lCarte.add(new Carte(path));
         }
         return lCarte;
+    }
+
+    /**
+     * Actualise les ImageViews de gridPaneCenter avec les images des cartes pris en argument
+     * @param lCarte dont les ImageView affiche les images
+     */
+    private void actualiserImageView(List<Carte> lCarte) {
+        int i = 0;
+        for(Carte card : lCarte) {
+            ((ImageView) gridPaneCenter.getChildren().get(i)).setImage(card.getVisible());
+            i ++;
+        }
     }
 
 }
