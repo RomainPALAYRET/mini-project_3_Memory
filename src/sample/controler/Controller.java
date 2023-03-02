@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import sample.model.Carte;
@@ -21,6 +22,7 @@ import javafx.beans.Observable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,13 +42,17 @@ public class Controller {
     private GridPane gridPaneCenter;
 
     @FXML
-    private Label time;
+    private Label lTimer;
+    @FXML
+    private Label lVictoire;
+
+    private int nbPaireRestante;
 
     @FXML
     private void actionBStart(javafx.event.ActionEvent evt) {
 
         List<Carte> lCarte = createListCarte();
-
+        nbPaireRestante = 12;
         // Gestion du Timer :
         Date depart = new Date();
         Timeline tm = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
@@ -88,28 +94,39 @@ public class Controller {
                 @Override
                 public void handle(Event event) {
 
-                    if(paireATester.size() == 2) {
-                        // on retourne les 2 cartes précédente qui ne font pas une paire
-                        paireATester.get(0).setBack();
-                        paireATester.get(1).setBack();
-                        paireATester.clear();
-                    }
-
-                    paireATester.add(card);
-                    card.setFace();
-
-                    if(paireATester.size() == 2) {
-                        // s'il y a une paire
-                        if(paireATester.get(0).equals(paireATester.get(1))) {
+                    if(card.isVisible()) {
+                        if (paireATester.size() == 2) {
+                            // on retourne les 2 cartes précédentes qui ne font pas une paire
+                            paireATester.get(0).setBack();
+                            paireATester.get(1).setBack();
                             paireATester.clear();
-                            tm.stop();
-
-                            // effet sonore (cri du pokémon)
-                            (new MediaPlayer(card.getCry())).play();
-
                         }
+
+                        paireATester.add(card);
+                        card.setFace();
+
+                        if (paireATester.size() == 2) {
+                            // s'il y a une paire
+                            if (paireATester.get(0).equals(paireATester.get(1))) {
+                                nbPaireRestante -= 1;
+                                paireATester.clear();
+
+
+                                // si on a gagné
+                                if (nbPaireRestante == 0) {
+                                    tm.stop();
+                                    lVictoire.setText("Victoire !");
+                                    MediaPlayer mp = new MediaPlayer(new Media(new File("ressource/snd/Victoire.mp3").toURI().toString()));
+                                    mp.play();
+                                } else {
+                                    // effet sonore (cri du pokémon)
+                                    (new MediaPlayer(card.getCry())).play();
+                                }
+
+                            }
+                        }
+                        actualiserImageView(lCarte);
                     }
-                    actualiserImageView(lCarte);
 
                 }
             });
@@ -150,7 +167,7 @@ public class Controller {
      * @param depart l'heure a laquelle le timer a commencé
      */
     private void showTime(Date  depart) {
-        time.setText( "Timer : " + String.valueOf(TimeUnit.SECONDS.convert((new Date()).getTime() - depart.getTime(),TimeUnit.MILLISECONDS)) + "s");
+        lTimer.setText( "Timer : " + String.valueOf(TimeUnit.SECONDS.convert((new Date()).getTime() - depart.getTime(),TimeUnit.MILLISECONDS)) + "s");
     }
 
 }

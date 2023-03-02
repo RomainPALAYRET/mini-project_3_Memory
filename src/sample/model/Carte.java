@@ -21,6 +21,7 @@ public class Carte {
     private Image face;
     private Image back;
 
+
     private Media cry;
 
     private Image visible;
@@ -38,7 +39,6 @@ public class Carte {
         face = new Image(truePath);
         back = new Image("file:ressource/img/Inconnu.png", 55, 55,false,false);
         visible = back;
-        System.out.println(trueSongPath);
         cry = new Media(new File(trueSongPath).toURI().toString());
     }
 
@@ -71,11 +71,19 @@ public class Carte {
     }
 
     /**
+     * @return true si la carte est face visible
+     */
+    public boolean isVisible() {
+        return this.visible == this.back;
+    }
+
+    /**
      * La face visible de la carte est sa face
      */
     public void setFace() {
         visible = face;
     }
+
 
     /**
      *  La face visible de la carte est son dos

@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controler.Controller">
    <center>
@@ -26,8 +27,13 @@
          <children>
             <VBox alignment="CENTER" layoutX="50.0" layoutY="86.0" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
                <children>
+                  <Label fx:id="lVictoire">
+                     <font>
+                        <Font name="System Bold" size="17.0" />
+                     </font>
+                  </Label>
                   <Button fx:id="bStart" alignment="CENTER" mnemonicParsing="false" onAction="#actionBStart" prefHeight="25.0" prefWidth="106.0" text="Start" textAlignment="CENTER" />
-                  <Label fx:id="time" alignment="BOTTOM_CENTER" prefHeight="18.0" prefWidth="112.0" text="00:00:00" />
+                  <Label fx:id="lTimer" alignment="BOTTOM_CENTER" prefHeight="18.0" prefWidth="112.0" text="00:00:00" />
                </children>
             </VBox>
          </children>
