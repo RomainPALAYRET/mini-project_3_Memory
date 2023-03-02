@@ -1,22 +1,32 @@
 package sample.controler;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import sample.model.Carte;
 import javafx.beans.Observable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Collections.shuffle;
 
@@ -30,9 +40,20 @@ public class Controller {
     private GridPane gridPaneCenter;
 
     @FXML
+    private Label time;
+
+    @FXML
     private void actionBStart(javafx.event.ActionEvent evt) {
 
         List<Carte> lCarte = createListCarte();
+
+        // Gestion du Timer :
+        Date depart = new Date();
+        Timeline tm = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
+            showTime(depart);
+        }));
+        tm.setCycleCount(Animation.INDEFINITE);
+        tm.play();
 
         /* On creer une grille de 6 par 4 qu'on place au centre du BorderPane */
         gridPaneCenter.getColumnConstraints().clear();
@@ -81,6 +102,11 @@ public class Controller {
                         // s'il y a une paire
                         if(paireATester.get(0).equals(paireATester.get(1))) {
                             paireATester.clear();
+                            tm.stop();
+
+                            // effet sonore (cri du pokémon)
+                            (new MediaPlayer(card.getCry())).play();
+
                         }
                     }
                     actualiserImageView(lCarte);
@@ -99,7 +125,7 @@ public class Controller {
     private List<Carte> createListCarte() {
         List lCarte = new ArrayList<Carte>();
         for(int i = 1; i <= 12; i ++) {
-            final String path = i < 10 ? "Stade1_00" + i + ".png" : "Stade1_0" + i + ".png";
+            final String path = i < 10 ? "Stade1_00" + i : "Stade1_0" + i;
             lCarte.add(new Carte(path));
             lCarte.add(new Carte(path));
         }
@@ -116,6 +142,15 @@ public class Controller {
             ((ImageView) gridPaneCenter.getChildren().get(i)).setImage(card.getVisible());
             i ++;
         }
+    }
+
+    /**
+     * Met à jour le label Timer
+     * est appellée toutes les secondes.
+     * @param depart l'heure a laquelle le timer a commencé
+     */
+    private void showTime(Date  depart) {
+        time.setText( "Timer : " + String.valueOf(TimeUnit.SECONDS.convert((new Date()).getTime() - depart.getTime(),TimeUnit.MILLISECONDS)) + "s");
     }
 
 }

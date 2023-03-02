@@ -5,6 +5,9 @@
 package sample.model;
 
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+
+import java.io.File;
 
 /**
  * Une carte d'un jeu mémory, cette carte possède une image qui la définie
@@ -18,6 +21,8 @@ public class Carte {
     private Image face;
     private Image back;
 
+    private Media cry;
+
     private Image visible;
 
     /**
@@ -26,12 +31,15 @@ public class Carte {
      */
     public Carte(String path) {
 
-        String truePath = "file:ressource/img/" + path;
+        String truePath = "file:ressource/img/" + path + ".png";
+        String trueSongPath = "ressource/snd/" + path + ".mp3";
 
         this.path = path;
         face = new Image(truePath);
         back = new Image("file:ressource/img/Inconnu.png", 55, 55,false,false);
         visible = back;
+        System.out.println(trueSongPath);
+        cry = new Media(new File(trueSongPath).toURI().toString());
     }
 
     /**
@@ -39,6 +47,13 @@ public class Carte {
      */
     public String getPath() {
         return this.path;
+    }
+
+    /**
+     * @return le cry associé à la carte
+     */
+    public Media getCry() {
+        return this.cry;
     }
 
     /**
