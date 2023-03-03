@@ -12,8 +12,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("view/sample.fxml"));
         primaryStage.setTitle("Memory");
-        primaryStage.setScene(new Scene(root, 430, 350));
-        primaryStage.setResizable(false);
+        primaryStage.setScene(new Scene(root, 430, 560));
+        primaryStage.setResizable(true);
         primaryStage.show();
     }
 

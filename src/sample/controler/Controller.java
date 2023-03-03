@@ -7,6 +7,9 @@ import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -20,6 +23,7 @@ import javafx.util.Duration;
 import sample.model.Carte;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +34,9 @@ import static java.util.Collections.shuffle;
 public class Controller {
     @FXML
     private Button bStart;
+
+    @FXML
+    private Button bStart2;
 
 
     @FXML
@@ -51,13 +58,27 @@ public class Controller {
 
     private int score; // le score de la partie
 
+    private int nbCarteTotale = 40; // le nombre de carte depend de la difficulté
+
     private boolean defaite; // true si la partie est perdue (donc si le temps est écoulé)
 
-    MediaPlayer mpVictoire;
+    MediaPlayer mpVictoire; // media player de la musique de Victoire
 
     @FXML
     public void initialize(){
         mpVictoire = new MediaPlayer(new Media(new File("ressource/snd/Victoire.mp3").toURI().toString()));
+    }
+
+    @FXML
+    private void actionBStartEasy(javafx.event.ActionEvent evt) throws IOException {
+        nbCarteTotale = 24;
+        actionBStart(evt);
+    }
+
+    @FXML
+    private void actionBStartHard(javafx.event.ActionEvent evt) throws IOException {
+        nbCarteTotale = 40;
+        actionBStart(evt);
     }
     @FXML
     private void actionBStart(javafx.event.ActionEvent evt) {
@@ -65,9 +86,13 @@ public class Controller {
         score = 0;
         majScore(0);
         defaite = false;
+        mpVictoire.stop();
 
         List<Carte> lCarte = createListCarte();
-        nbPaireRestante = 12;
+
+
+        nbPaireRestante = nbCarteTotale / 2;
+
         // Gestion du Timer :
         Date depart = new Date();
         if(tm != null) {
@@ -83,6 +108,7 @@ public class Controller {
 
         lVictoire.setText("");
 
+
         /* On creer une grille de 6 par 4 qu'on place au centre du BorderPane */
         gridPaneCenter.getChildren().clear();
         gridPaneCenter.getColumnConstraints().clear();
@@ -92,7 +118,7 @@ public class Controller {
             gridPaneCenter.getColumnConstraints().add(new ColumnConstraints());
         }
 
-        for(int j = 0; j < 6; j ++){
+        for(int j = 0; j < nbCarteTotale / 4; j ++){
             gridPaneCenter.getRowConstraints().add(new RowConstraints());
         }
 
@@ -174,6 +200,14 @@ public class Controller {
             final String path = i < 10 ? "Stade1_00" + i : "Stade1_0" + i;
             lCarte.add(new Carte(path));
             lCarte.add(new Carte(path));
+        }
+
+        if(nbCarteTotale == 40) {
+            for(int i = 1; i <= 8; i ++) {
+                final String path = i < 10 ? "Stade2_00" + i : "Stade2_0" + i;
+                lCarte.add(new Carte(path));
+                lCarte.add(new Carte(path));
+            }
         }
         return lCarte;
     }
