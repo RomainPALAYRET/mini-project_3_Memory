@@ -3,6 +3,9 @@
 author : PALAYRET Romain
 creation date : 28/02/2023
 
+helper : Tristan RIGAL
+         Clément AULAS
+
 Ce qui marche : 
     - Interface utilisateur attrayante, avec des éléments graphique (compteur de temps, score, et bouton start)
     - Le joueur peux sélectionner 2 cartes à la fois, qui peuvent former des pairs
