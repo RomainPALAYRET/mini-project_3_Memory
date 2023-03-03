@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controler.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controler.Controller">
    <center>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -33,7 +34,8 @@
                      </font>
                   </Label>
                   <Button fx:id="bStart" alignment="CENTER" mnemonicParsing="false" onAction="#actionBStart" prefHeight="25.0" prefWidth="106.0" text="Start" textAlignment="CENTER" />
-                  <Label fx:id="lTimer" alignment="BOTTOM_CENTER" prefHeight="18.0" prefWidth="112.0" text="00:00:00" />
+                  <Label fx:id="lScore" text="Score : 0" />
+                  <Label fx:id="lTimer" alignment="BOTTOM_CENTER" prefHeight="18.0" prefWidth="112.0" text="300s" />
                </children>
             </VBox>
          </children>

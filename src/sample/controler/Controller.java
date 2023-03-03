@@ -36,7 +36,6 @@ public class Controller {
     @FXML
     private Button bStart;
 
-    private List<Carte> paireATester;
 
     @FXML
     private GridPane gridPaneCenter;
@@ -46,22 +45,45 @@ public class Controller {
     @FXML
     private Label lVictoire;
 
-    private int nbPaireRestante;
+    @FXML
+    private Label lScore;
+
+    private int nbPaireRestante; // le nombre de paire restante (a 0, la partie est gagnée)
+
+    private List<Carte> paireATester; // les cartes retournée par le joueur (2 au maximum)
+
+    private Timeline tm = null; // le timer d'une partie;
+
+    private int score; // le score de la partie
+
+    private boolean defaite; // true si la partie est perdue (donc si le temps est écoulé)
 
     @FXML
     private void actionBStart(javafx.event.ActionEvent evt) {
+
+        score = 0;
+        majScore(0);
+        defaite = false;
 
         List<Carte> lCarte = createListCarte();
         nbPaireRestante = 12;
         // Gestion du Timer :
         Date depart = new Date();
-        Timeline tm = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
+        if(tm != null) {
+            tm.stop();
+        }
+        tm = new Timeline(new KeyFrame(Duration.millis(1000), ae -> {
             showTime(depart);
         }));
+
+
         tm.setCycleCount(Animation.INDEFINITE);
         tm.play();
 
+        lVictoire.setText("");
+
         /* On creer une grille de 6 par 4 qu'on place au centre du BorderPane */
+        gridPaneCenter.getChildren().clear();
         gridPaneCenter.getColumnConstraints().clear();
         gridPaneCenter.getRowConstraints().clear();
 
@@ -94,12 +116,13 @@ public class Controller {
                 @Override
                 public void handle(Event event) {
 
-                    if(card.isVisible()) {
+                    if(card.isVisible() && !defaite) {
                         if (paireATester.size() == 2) {
                             // on retourne les 2 cartes précédentes qui ne font pas une paire
                             paireATester.get(0).setBack();
                             paireATester.get(1).setBack();
                             paireATester.clear();
+                            majScore(-1);
                         }
 
                         paireATester.add(card);
@@ -110,6 +133,7 @@ public class Controller {
                             if (paireATester.get(0).equals(paireATester.get(1))) {
                                 nbPaireRestante -= 1;
                                 paireATester.clear();
+                                majScore(2);
 
 
                                 // si on a gagné
@@ -167,7 +191,27 @@ public class Controller {
      * @param depart l'heure a laquelle le timer a commencé
      */
     private void showTime(Date  depart) {
-        lTimer.setText( "Timer : " + String.valueOf(TimeUnit.SECONDS.convert((new Date()).getTime() - depart.getTime(),TimeUnit.MILLISECONDS)) + "s");
+        long tempsRestant = (500 - TimeUnit.SECONDS.convert((new Date()).getTime() - depart.getTime(),TimeUnit.MILLISECONDS));
+
+        if(tempsRestant <= 0) {
+            tempsRestant = 0;
+            lVictoire.setText("Défaite !");
+            defaite = true;
+        }
+
+        lTimer.setText( "Timer : " + String.valueOf(tempsRestant) + "s");
+
     }
+
+    /**
+     * Met à jour le score avec l'increment passé en paramètre
+     * Le score ne peut pas être négatif
+     * @param increment ce qu'il faut ajouter au score
+     */
+    private void majScore(int  increment) {
+        if(score + increment >= 0) {score += increment;}
+        lScore.setText("Score : " + score);
+    }
+
 
 }
