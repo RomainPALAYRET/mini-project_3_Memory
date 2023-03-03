@@ -3,6 +3,7 @@ package sample.controler;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -10,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -18,14 +18,9 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import sample.model.Carte;
-import javafx.beans.Observable;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.io.File;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -58,6 +53,12 @@ public class Controller {
 
     private boolean defaite; // true si la partie est perdue (donc si le temps est écoulé)
 
+    MediaPlayer mpVictoire;
+
+    @FXML
+    public void initialize(){
+        mpVictoire = new MediaPlayer(new Media(new File("ressource/snd/Victoire.mp3").toURI().toString()));
+    }
     @FXML
     private void actionBStart(javafx.event.ActionEvent evt) {
 
@@ -140,8 +141,12 @@ public class Controller {
                                 if (nbPaireRestante == 0) {
                                     tm.stop();
                                     lVictoire.setText("Victoire !");
-                                    MediaPlayer mp = new MediaPlayer(new Media(new File("ressource/snd/Victoire.mp3").toURI().toString()));
-                                    mp.play();
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mpVictoire.play();
+                                        }
+                                    });
                                 } else {
                                     // effet sonore (cri du pokémon)
                                     (new MediaPlayer(card.getCry())).play();
